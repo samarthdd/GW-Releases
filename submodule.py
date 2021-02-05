@@ -73,7 +73,7 @@ class Tree(object):
     def _getLabel(self, with_url, sep=' - '):
 
         label = self.data['name']
-        label = label + "-"
+        label = label + "--"
 
         json=self.get_submodules_json()
 
