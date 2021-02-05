@@ -51,7 +51,8 @@ jobs:
     - name: Create Graph
       run: |
         python submodule.py -m png ../GW-Releases
-        ls
+        ls -l
+        git status
         
     - name: update file and push to remote
       run: |
