@@ -51,6 +51,7 @@ jobs:
     - name: Create Graph
       run: |
         rm graph.png
+        ls -l
         python submodule.py -m png ../GW-Releases
         ls -l
         git status
