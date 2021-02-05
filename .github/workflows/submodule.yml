@@ -48,4 +48,4 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Create Graph
       run: |
-        python $GWReleases/submodule.py -m png $GW-Releases
+        python submodule.py -m png $GW-Releases
