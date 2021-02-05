@@ -30,9 +30,9 @@ jobs:
         submodules: true
     - name: Update submodules
       run: |
-         ls
-         cd ~
-         ls
+         pwd
+         GWReleases=pwd
+         $GWReleases
          git submodule update --init --recursive
            
     - name: Set up Python ${{ matrix.python-version }}
@@ -48,5 +48,4 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Create Graph
       run: |
-        cd ~
-        python GW-Releases/submodule.py -m png GW-Releases
+        python $GWReleases/submodule.py -m png $GW-Releases
