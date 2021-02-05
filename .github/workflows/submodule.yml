@@ -41,7 +41,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install pydot        
         pip install click 
+        pip install pydot
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
+    - name: Create Graph
       run: |
         python ./submodule.py -m png .
