@@ -41,4 +41,4 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
-        python ./scripts/submodule_visualization.py -m png .
+        python ./submodule.py -m png .
