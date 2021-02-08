@@ -43,6 +43,8 @@ class Tree(object):
 
     def get_master_tag(self):
         get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
+        print(get_tag_commit)
+        print('commit id')
         tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
         args = ["git", "describe", "--tags", tag_commit_id]
         master_tag = subprocess.check_output(args, encoding='UTF-8')
@@ -50,6 +52,7 @@ class Tree(object):
 
     def buildGraph(self, graph, parent, indentation, graphmode, with_url):
         global level
+        
         color="#ACE7EF"
         if level==0:
             color="#FFBEBC"
