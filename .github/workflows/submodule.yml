@@ -4,11 +4,10 @@ name: CI
 
 # Controls when the action will run. 
 on:
-  on:
-    push:
-    # Pattern matched against refs/tags
-      tags:        
-        - '*'           # Push events to every tag
+  push:
+  # Pattern matched against refs/tags
+    tags:        
+      - '*'           # Push events to every tag
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
