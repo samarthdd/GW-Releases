@@ -13,6 +13,7 @@ class Tree(object):
         self.left = None
         self.children = []
         self.data = data
+        print(data)
 
     def createChild(self,tree):
         self.children.append(tree)
@@ -39,6 +40,13 @@ class Tree(object):
         print(indent + label)
         for child in self.children:
             child.print_submodule_info(indentation + 1, with_url)
+
+    def get_master_tag(self):
+        get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
+        tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
+        args = ["git", "describe", "--tags", tag_commit_id]
+        master_tag = subprocess.check_output(args, encoding='UTF-8')
+        return master_tag
 
     def buildGraph(self, graph, parent, indentation, graphmode, with_url):
         global level
@@ -71,11 +79,16 @@ class Tree(object):
         return [graph, indentation]
 
     def _getLabel(self, with_url, sep=' - '):
+        label = ""
+        if "GW-Releases" in self.data['name']:
+            label=sep + label+self.data["name"]
+            label = label + sep+self.get_master_tag()+sep
 
-        label = self.data['name']
-        label = label + "--"
 
-        json=self.get_submodules_json()
+        if with_url and 'url' in self.data and self.data['url']:
+            label += sep + self.data['url'].replace("https://github.com/", "")
+
+        json = self.get_submodules_json()
 
         for each in json:
             each = each.split()
@@ -83,13 +96,13 @@ class Tree(object):
 
             if repo_name.split("/")[-1]==self.data['name']:
                 commit_id=each[0].decode("utf-8")
-                tag=each[2].decode("utf-8")
-                label +=  f"tag_id={tag}"
-                label = label + "\n"
-                #label += sep +f"commit_id={commit_id}"
+                tag=each[2].decode("utf-8").strip("()")
 
-        if with_url and 'url' in self.data and self.data['url']:
-            label += sep + self.data['url'].replace("https://github.com/", "")
+                label +=  sep+f"{tag}"+sep
+
+                label=label+sep
+
+                #label += sep +f"commit_id={commit_id}"
 
         return label
 
@@ -116,10 +129,13 @@ def parseGitModuleFile(file):
         res.append((p, u))
     return res
 
+
+
 def parse(path, url=None):
     if os.path.isfile(os.path.join(path, '.gitmodules')) is False:
         return Tree({'name': os.path.basename(os.path.normpath(path)),
                      'path': path, 'url': url})
+
 
 
 
@@ -153,6 +169,7 @@ def parse(path, url=None):
               show_default=True,
               help="Add repo URLs")
 @click.argument('repo')
+
 def main(mode, repo, graphmode, out, with_url=True):
 
     root = repo
@@ -169,3 +186,5 @@ def main(mode, repo, graphmode, out, with_url=True):
 
 if __name__ == '__main__':
     main()
+
+
