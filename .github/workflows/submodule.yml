@@ -43,8 +43,8 @@ jobs:
     - name: Create Graph
       run: |
         rm graph.png
-        python submodule.py -m png ../GW-Releases
         ls -l
+        python submodule.py -m png ../GW-Releases
         git status
         
     - name: update file and push to remote
