@@ -47,16 +47,14 @@ jobs:
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         rm graph.png
         git status
-        git add graph.png
+        git add 'graph.png'
         git commit -m "deleted older graph"
-        python submodule.py -m png ../GW-Releases
-        git status
         
     - name: Create Graph and push it to repo
       run: |
         python submodule.py -m png ../GW-Releases
         git status
-        git add graph.png
+        git add 'graph.png'
         git commit -m "Updates graph"
         git push
         
