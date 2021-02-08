@@ -43,6 +43,8 @@ jobs:
     - name: Create Graph
       run: |
         rm graph.png
+        git add graph.png
+        git commit -m "deleted older graph"
         git status
         ls -l
         python submodule.py -m png ../GW-Releases
