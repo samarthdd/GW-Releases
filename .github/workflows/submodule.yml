@@ -45,17 +45,15 @@ jobs:
         rm graph.png
         ls -l
         python submodule.py -m png ../GW-Releases
+        ls -l
         git status
         
     - name: update file and push to remote
       run: |
+        
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git status
-
         git add 'graph.png'
         git commit -m "Updates graph"
         git push
-
-
-
