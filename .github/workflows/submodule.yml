@@ -4,11 +4,11 @@ name: CI
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    # Pattern matched against refs/tags
+    tags:        
+      - '*'           # Push events to every tag
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -27,14 +27,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it  
     - uses: actions/checkout@v2
       with:
-        submodules: true
-    - name: Update submodules
-      run: |
-         pwd
-         GWReleases=pwd
-         $GWReleases
-         git submodule update --init --recursive
-           
+        submodules: recursive           
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
