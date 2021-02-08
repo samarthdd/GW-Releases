@@ -49,7 +49,7 @@ jobs:
         
     - name: Create Graph and push it to repo
       run: |
-        python submodule.py -m png ../GW-Releases
+        python submodule.py ../GW-Releases
         git status
         git add 'graph.png'
         git commit -m "Updates graph"
