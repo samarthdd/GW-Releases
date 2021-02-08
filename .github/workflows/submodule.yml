@@ -32,17 +32,15 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install graphviz
-        pip install pydot
-        python -m pip install --upgrade pip
-        pip install pydot        
+        pip install pydot    
         pip install click 
-        pip install pydot
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
     - name: Delete older graph
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
         rm graph.png
         git status
         git add 'graph.png'
