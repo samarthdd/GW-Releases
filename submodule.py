@@ -45,7 +45,10 @@ class Tree(object):
         get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
         print(get_tag_commit)
         print('commit id')
+        tags=['git', 'fetch', '--all', '--tags']
+        subprocess.check_output(tags)
         tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
+        print(tag_commit_id)
         args = ["git", "describe", "--tags", tag_commit_id]
         master_tag = subprocess.check_output(args, encoding='UTF-8')
         return master_tag
