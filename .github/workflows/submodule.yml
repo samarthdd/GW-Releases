@@ -39,8 +39,8 @@ jobs:
         
     - name: Delete older graph
       run: |
-        git config user.name github-actions@github.com
-        git config user.email github-actions
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git remote -v
         git checkout -b $BRANCH_NAME
@@ -56,7 +56,9 @@ jobs:
         git status
         git add 'graph.png'
         git commit -m "Updates graph"
-        git push --set-upstream origin $BRANCH_NAME
+        git branch --v
+
+        git push -u origin $BRANCH_NAME
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
         gh pr create --base  script --title "Update visualization for new tag ""
         sleep 5s
