@@ -61,7 +61,7 @@ jobs:
         git commit -m "Updates graph"
         git push -u origin $BRANCH_NAME
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
-        gh pr create --base main --title "Update visualization for new tag "
+        gh pr create --title "Update visualization for new tag "
         sleep 5s
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUBPAT }}
