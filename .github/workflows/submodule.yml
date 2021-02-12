@@ -54,10 +54,13 @@ jobs:
     - name: Create Graph and push it to repo
       run: |
         python submodule.py ../GW-Releases
+        git branch --v
+        git branch --v
+        git branch --v
         git status
         git add 'graph.png'
         git commit -m "Updates graph"
-        git branch --v
+        
 
         git push origin $BRANCH_NAME
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
