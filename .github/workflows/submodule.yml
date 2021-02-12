@@ -28,6 +28,7 @@ jobs:
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
+        repository: samarthdd/GW-Releases
         python-version: 3.7
     - name: Install dependencies
       run: |
