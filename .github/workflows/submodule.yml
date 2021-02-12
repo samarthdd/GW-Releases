@@ -24,7 +24,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it  
     - uses: actions/checkout@v2
       with:
-        repository: samarthdd/GW-Releases  
+        repository: samarthdd/GW-Releases 
+        token: ${{secrets.GITHUBPAT}}
         submodules: recursive           
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
