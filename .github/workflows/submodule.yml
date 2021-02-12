@@ -59,7 +59,7 @@ jobs:
         git commit -m "Updates graph"
         git branch --v
 
-        git push
+        git push --set-upstream origin $BRANCH_NAME
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
         gh pr create --base  script --title "Update visualization for new tag ""
         sleep 5s
