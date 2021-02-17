@@ -22,7 +22,7 @@ on:
         required: false
       monitoring_ip:
         description: IP address of Monitoring server
-        default: 91.109.26.22
+        default: 52.30.24.9
         required: true
       create_ova:
         description: Create OVA
@@ -92,7 +92,7 @@ jobs:
         EOF
         sed -i 's/<vm_name>/icap-server/g' ova-export.json
         RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
-        packer build -color=false -on-error=cleanup -var github_sha=$RANDOM_STR -var vm_name=icap-server -var create_ova=${{ github.event.inputs.create_ova }} -var region=${{ env.AWS_DEFAULT_REGION }} -var extra_regions=${{ github.event.inputs.extra_regions }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws-ami.json
+        packer build -color=false -on-error=cleanup -var github_sha=$RANDOM_STR -var vm_name=icap-server -var create_ova=${{ github.event.inputs.create_ova }} -var region=${{ env.AWS_DEFAULT_REGION }} -var extra_regions=${{ github.event.inputs.extra_regions }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var elastic_host=${MONITORING_IP} -var elastic_port=9200 -var elastic_user=${{ secrets.MONITORING_USER }} -var elastic_password=${{ secrets.MONITORING_PASSWORD }} aws-ami.json
 
   deploy-ami:
     runs-on: ubuntu-latest

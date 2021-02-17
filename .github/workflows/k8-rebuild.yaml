@@ -7,6 +7,11 @@ env:
 # events but only for the master branch
 on:
   workflow_dispatch:
+    inputs:
+      monitoring_ip:
+        description: IP address of Monitoring server
+        default: 52.30.24.9
+        required: true  
   push:
     branches: [ main ]
     paths-ignore:
@@ -63,7 +68,7 @@ jobs:
         SSH_PASSWORD=${{ secrets.ICAP_SSH_PASSWORD }}
         EOF
         RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
-        packer build -color=false -on-error=cleanup -var github_sha=${RANDOM_STR} -var vm_name=k8-rebuild -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} packer/aws-ova.json
+        packer build -color=false -on-error=cleanup -var github_sha=${RANDOM_STR} -var vm_name=k8-rebuild -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var elastic_host=${{ github.event.inputs.monitoring_ip }} -var elastic_port=9200 -var elastic_user=${{ secrets.MONITORING_USER }} -var elastic_password=${{ secrets.MONITORING_PASSWORD }} packer/aws-ova.json
 
   deploy-ami:
     runs-on: ubuntu-latest
