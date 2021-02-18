@@ -70,6 +70,8 @@ jobs:
         cd gp-load-balancer
         chmod +x packer/ova-check.sh
         packer build -color=false -on-error=cleanup -var github_sha=${{ github.sha }} -var vm_name=haproxy-icap -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var elastic_host=${{ github.event.inputs.monitoring_ip }} -var elastic_port=9200 -var elastic_user=${{ secrets.MONITORING_USER }} -var elastic_password=${{ secrets.MONITORING_PASSWORD }} packer/aws-ova.json
+   
+   #Uncomment the following to deploy the created AMI on AWS EC2       
   deploy-ami:
     runs-on: ubuntu-latest
     needs: build-ami
@@ -85,31 +87,30 @@ jobs:
           instance_id=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=dev-haproxy-icap' "Name=instance-state-name,Values=running" --output text --query 'Reservations[*].Instances[*].InstanceId')
           echo ::set-output name=instance_id::$instance_id
   
-  #Uncomment the following to deploy the created AMI on AWS EC2       
-#       - name: Deploy AMI to dev
-#         id: deploy
-#         env:
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-#         run: |
-#           ami_id=$(aws ec2 describe-images --filters "Name=name,Values=haproxy-icap-${{ github.sha }}" --query 'Images[*].[ImageId]' --output text)
-#           result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t2.medium --key-name naders --security-group-ids sg-0996adad67e6beef0 --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-haproxy-icap}, {Key=Team, Value=haproxy-icap}, {Key=Owner, Value=githubactionAMIpacker}, {Key=Scope, Value=Export-OVA}, {Key=Delete, Value=false}, {Key=AMI_Name, Value=haproxy-icap-${{ github.sha }}}]')
-#           sleep 3m
-#           instance_id=$(echo $result | jq -r ".Instances[0].InstanceId")
-#           echo "$instance_id is created."
-#           instance_description=$(aws ec2 describe-instances --instance-ids $instance_id)
-#           instance_state=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].State.Name")
-#           echo "Instance state is $instance_state"
-#           if [[ "$instance_state" != "running" ]];then
-#               echo "EC2 instance $instance_id created from AMI has failed to start in time, terminating the instance." 
-#               aws ec2 terminate-instances --instance-ids $instance_id
-#               exit -1
-#           fi
-#           instance_ip=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].PublicIpAddress")
-#           echo "Access the application at http://${instance_ip}"
-#           echo ::set-output name=instance_ip::$instance_ip
-#           echo ::set-output name=instance_id::$instance_id
-#           echo ::set-output name=ami_id::$ami_id
+      - name: Deploy AMI to dev
+        id: deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        run: |
+          ami_id=$(aws ec2 describe-images --filters "Name=name,Values=haproxy-icap-${{ github.sha }}" --query 'Images[*].[ImageId]' --output text)
+          result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t2.medium --key-name naders --security-group-ids sg-0996adad67e6beef0 --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-haproxy-icap}, {Key=Team, Value=haproxy-icap}, {Key=Owner, Value=githubactionAMIpacker}, {Key=Scope, Value=Export-OVA}, {Key=Delete, Value=false}, {Key=AMI_Name, Value=haproxy-icap-${{ github.sha }}}]')
+          sleep 3m
+          instance_id=$(echo $result | jq -r ".Instances[0].InstanceId")
+          echo "$instance_id is created."
+          instance_description=$(aws ec2 describe-instances --instance-ids $instance_id)
+          instance_state=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].State.Name")
+          echo "Instance state is $instance_state"
+          if [[ "$instance_state" != "running" ]];then
+              echo "EC2 instance $instance_id created from AMI has failed to start in time, terminating the instance." 
+              aws ec2 terminate-instances --instance-ids $instance_id
+              exit -1
+          fi
+          instance_ip=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].PublicIpAddress")
+          echo "Access the application at http://${instance_ip}"
+          echo ::set-output name=instance_ip::$instance_ip
+          echo ::set-output name=instance_id::$instance_id
+          echo ::set-output name=ami_id::$ami_id
 
   
