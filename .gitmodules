@@ -9,7 +9,7 @@
 	url = https://github.com/k8-proxy/icap-infrastructure
 [submodule "gp-load-balancer"]
 	path = gp-load-balancer
-	url = https://github.com/naderaly/gp-load-balancer
+	url = https://github.com/k8-proxy/gp-load-balancer
 [submodule "aws-jmeter-test-engine"]
 	path = aws-jmeter-test-engine
 	url = https://github.com/k8-proxy/aws-jmeter-test-engine
