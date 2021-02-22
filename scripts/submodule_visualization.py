@@ -100,12 +100,13 @@ class Tree(object):
 
         if with_url and 'url' in self.data and self.data['url']:
             repo_name = self.data['url'].replace("https://github.com/", "")
-            label += sep + repo_name
+            label += sep + repo_name.replace("k8-proxy/","")
             parent_repo=self.get_parent_repo(repo_name.replace(".git",""))
             if parent_repo:
                 if parent_repo:
                     label += sep + "(Forked from: " + parent_repo + ")"
                     print(parent_repo)
+
 
         json = self.get_submodules_json()
         for each in json:
