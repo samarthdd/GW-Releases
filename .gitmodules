@@ -28,3 +28,18 @@
 [submodule "go-icap-client"]
 	path = go-icap-client
 	url = https://github.com/k8-proxy/go-icap-client
+[submodule "gp-glasswallsolutions-website"]
+	path = gp-glasswallsolutions-website
+	url = https://github.com/k8-proxy/gp-glasswallsolutions-website
+[submodule "k8-icap-cloud-formation"]
+	path = k8-icap-cloud-formation
+	url = https://github.com/k8-proxy/k8-icap-cloud-formation
+[submodule "gp-sharepoint-plugins"]
+	path = gp-sharepoint-plugins
+	url = https://github.com/k8-proxy/gp-sharepoint-plugins
+[submodule "k8-go-api"]
+	path = k8-go-api
+	url = https://github.com/k8-proxy/k8-go-api
+[submodule "k8s-compliant-kubernetes"]
+	path = k8s-compliant-kubernetes
+	url = https://github.com/k8-proxy/k8s-compliant-kubernetes
