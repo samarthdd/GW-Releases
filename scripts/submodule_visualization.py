@@ -150,9 +150,9 @@ class Parser:
             u = config[section]['url']
             if "branch" in  config[section]:
                 b = config[section]['branch']
-            else:
-                cmd = ["git", "symbolic-ref", "refs/remotes/origin/HEAD"]
-                b = subprocess.check_output(cmd, encoding='UTF-8').split("/")[-1].strip()
+            # else:
+            #     cmd = ["git", "symbolic-ref", "refs/remotes/origin/HEAD"]
+            #     b = subprocess.check_output(cmd, encoding='UTF-8').split("/")[-1].strip()
 
 
             res.append((p, u, b))
