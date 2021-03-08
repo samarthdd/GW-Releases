@@ -148,6 +148,7 @@ class Parser:
         for section in config.sections():
             p = os.path.join(config[section]['path'])
             u = config[section]['url']
+            b=""
             if "branch" in  config[section]:
                 b = config[section]['branch']
             # else:
