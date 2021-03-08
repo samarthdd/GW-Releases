@@ -192,12 +192,12 @@ class Parser:
 
 
 def main(repo, graphmode, out):
-    cmd = ["git", "checkout", branch ]
-    subprocess.check_output(cmd)
-    cmd=["git", "reset", "--hard","HEAD" ]
-    subprocess.check_output(cmd)
-    cmd = ["git", "submodule", "update","--init","--recursive"]
-    subprocess.check_output(cmd)
+    # cmd = ["git", "checkout", branch ]
+    # subprocess.check_output(cmd)
+    # cmd=["git", "reset", "--hard","HEAD" ]
+    # subprocess.check_output(cmd)
+    # cmd = ["git", "submodule", "update","--init","--recursive"]
+    # subprocess.check_output(cmd)
 
 
     root = repo
