@@ -40,6 +40,4 @@
 [submodule "k8-go-api"]
 	path = k8-go-api
 	url = https://github.com/k8-proxy/k8-go-api
-[submodule "k8s-compliant-kubernetes"]
-	path = k8s-compliant-kubernetes
-	url = https://github.com/k8-proxy/k8s-compliant-kubernetes
+
