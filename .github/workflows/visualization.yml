@@ -60,7 +60,7 @@ jobs:
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
         
-        branch: example1
+        branch: example
         git checkout $branch
         git reset --hard HEAD
         git submodule update --init --recursive
