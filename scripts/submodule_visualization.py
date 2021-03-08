@@ -47,6 +47,11 @@ class Tree(object):
         master_tag = subprocess.check_output(args, encoding='UTF-8')
         return master_tag
 
+    def get_master_branch(self):
+        git_command=["git","branch","--show-current"]
+        master_branch=subprocess.check_output(git_command, encoding='UTF-8')
+        return master_branch
+
     def buildGraph(self, graph, parent, indentation, graphmode, with_url,level=0):
         color="#B8CFE0"
 
@@ -91,22 +96,25 @@ class Tree(object):
 
         return parent_repo
 
-    def get_Label(self, with_url, sep=' - '):
+    def get_Label(self, with_url, sep="\n"):
         label = ""
         main_repo_name=self.get_main_repo_name()
         if main_repo_name in self.data['name']:
             label=sep + label+self.data["name"]
-            label = label + sep+self.get_master_tag()+sep
+            label = label + sep+self.get_master_branch()+sep
+            #label += sep+"filedrop-centos"+sep
+
 
         if with_url and 'url' in self.data and self.data['url']:
             repo_name = self.data['url'].replace("https://github.com/", "")
-            label += sep + repo_name.replace("k8-proxy/","")
+            label += sep + repo_name
             parent_repo=self.get_parent_repo(repo_name.replace(".git",""))
             if parent_repo:
                 if parent_repo:
                     label += sep + "(Forked from: " + parent_repo + ")"
                     print(parent_repo)
-
+        if self.data["branch"]:
+            label += sep + sep + "branch =" + self.data["branch"]
 
         json = self.get_submodules_json()
         for each in json:
@@ -140,25 +148,35 @@ class Parser:
         for section in config.sections():
             p = os.path.join(config[section]['path'])
             u = config[section]['url']
-            res.append((p, u))
+            if "branch" in  config[section]:
+                b = config[section]['branch']
+            else:
+                cmd = ["git", "symbolic-ref", "refs/remotes/origin/HEAD"]
+                b = subprocess.check_output(cmd, encoding='UTF-8').split("/")[-1].strip()
+
+
+            res.append((p, u, b))
         return res
 
-    def parse(self,path, url=None):
+    def parse(self,path, url=None,branch=None):
         if os.path.isfile(os.path.join(path, '.gitmodules')) is False:
             return Tree({'name': os.path.basename(os.path.normpath(path)),
-                         'path': path, 'url': url})
+                         'path': path, 'url': url,"branch": branch})
 
         tree = Tree({'name': os.path.basename(os.path.normpath(path)),
-                     'path': path, 'url': url})
+                     'path': path, 'url': url,"branch": branch})
         moduleFile = os.path.join(path, '.gitmodules')
 
         if os.path.isfile(moduleFile) is True:
             subs = self.parseGitModuleFile(moduleFile)
-            for p, u in subs:
+            print(subs)
+            for p, u , b in subs:
                 newPath = os.path.join(path, p)
-                newTree = self.parse(newPath, u)
+                newTree = self.parse(newPath, u, b)
                 tree.createChild(newTree)
         return tree
+
+
 
 @click.command()
 @click.option('-g', '--graphmode',
@@ -172,7 +190,16 @@ class Parser:
 
 @click.argument('repo')
 
+
 def main(repo, graphmode, out):
+    cmd = ["git", "checkout", branch ]
+    subprocess.check_output(cmd)
+    cmd=["git", "reset", "--hard","HEAD" ]
+    subprocess.check_output(cmd)
+    cmd = ["git", "submodule", "update","--init","--recursive"]
+    subprocess.check_output(cmd)
+
+
     root = repo
     parser=Parser()
     tree = parser.parse(root)
