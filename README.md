@@ -15,6 +15,31 @@
 - [traffic-generator](https://github.com/k8-proxy/aws-jmeter-test-engine)
 - [GW-proxy](https://github.com/k8-proxy/GW-proxy)
 
+## ICAP Server
+
+Download [ICAP Server OVA]()
+-  ICAP Server AMI on AWS: 
+   ```
+   ID: ami-0f4fd267f91db16c8
+   Owner: 785217600689
+   Region: eu-west-1/Ireland
+   ```
+- Live instances running:
+   ```
+   AWS: http://54.171.157.189:31829/
+   ```
+## File Drop
+Download [File Drop OVA]()
+- File Drop AMI on AWS:
+   ```
+   ID: ami-0e82f434cc76a48a7
+   Owner: 785217600689
+   Region: eu-west-1/Ireland
+   ```
+- Live instances running:
+   ```
+   AWS: http://54.246.155.1/
+   ```
 ## Workflows (AWS)
 
 ### Workflows Brief
