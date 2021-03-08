@@ -18,7 +18,7 @@ on:
         required: false
       monitoring_ip:
         description: IP address of Monitoring server
-        default: 91.109.26.22
+        default: 52.30.24.9
         required: true
   push:
     branches: [ main ]
@@ -31,6 +31,7 @@ on:
       - '.github/workflows/k8-rebuild.yaml'
       - '.github/workflows/icap-server.yaml'
       - '.github/workflows/proxy-rebuild-ova.yaml'
+      - '.github/workflows/haproxy.yaml'
       - '.github/workflows/monitoring.yaml'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -73,7 +74,8 @@ jobs:
         MONITORING_IP=${{ github.event.inputs.monitoring_ip }}
         ICAP_IP=${{ github.event.inputs.icap_server_ip }}
         EOF
-        packer build -color=false -on-error=cleanup -var github_sha=${{ github.sha }} -var vm_name=proxy-rebuild -var region=${{ env.AWS_DEFAULT_REGION }} -var extra_regions=${{ github.event.inputs.extra_regions }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws-ami.json
+        RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
+        packer build -color=false -on-error=cleanup -var github_sha=${RANDOM_STR} -var vm_name=proxy-rebuild -var region=${{ env.AWS_DEFAULT_REGION }} -var extra_regions=${{ github.event.inputs.extra_regions }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var elastic_host=${{ github.event.inputs.monitoring_ip }} -var elastic_port=9200 -var elastic_user=${{ secrets.MONITORING_USER }} -var elastic_password=${{ secrets.MONITORING_PASSWORD }} aws-ami.json
 
   deploy-ami:
     runs-on: ubuntu-latest
@@ -97,8 +99,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
         run: |
-          ami_id=$(aws ec2 describe-images --filters "Name=name,Values=proxy-rebuild-${{ github.sha }}" --query 'Images[*].[ImageId]' --output text)
-          result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t2.large --key-name packer --security-group-ids sg-0120400d5eefb0b9e --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-proxy-rebuild}, {Key=Team, Value=k8-proxy/proxy-rebuild}, {Key=Owner, Value=githubactionAMIpacker}, {Key=AMI_Name, Value=proxy-rebuild-${{ github.sha }}}]')
+          RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
+          ami_id=$(aws ec2 describe-images --filters "Name=name,Values=proxy-rebuild-${RANDOM_STR}" --query 'Images[*].[ImageId]' --output text)
+          result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t2.large --key-name packer --security-group-ids sg-0120400d5eefb0b9e --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-proxy-rebuild}, {Key=Delete,Value=No},{Key=Scope,Value=icap-server}, {Key=Team, Value=k8-proxy/proxy-rebuild}, {Key=Owner, Value=githubactionAMIpacker}, {Key=AMI_Name, Value=proxy-rebuild-${{ github.sha }}}]')
           sleep 12m
           instance_id=$(echo $result | jq -r ".Instances[0].InstanceId")
           echo "$instance_id is created."

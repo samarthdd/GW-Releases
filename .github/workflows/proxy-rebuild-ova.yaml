@@ -24,6 +24,7 @@ on:
       - '.github/workflows/k8-rebuild.yaml'
       - '.github/workflows/icap-server.yaml'
       - '.github/workflows/proxy-rebuild.yaml'
+      - '.github/workflows/haproxy.yaml'
       - '.github/workflows/monitoring.yaml'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:

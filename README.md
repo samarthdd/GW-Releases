@@ -1,6 +1,6 @@
 # GW-Releases
 
-![Alt text](https://github.com/samarthdd/GW-Releases/blob/main/graph.png)
+![Alt text](graph.png)
 
 ## Relevant Repos
 
@@ -15,6 +15,31 @@
 - [traffic-generator](https://github.com/k8-proxy/aws-jmeter-test-engine)
 - [GW-proxy](https://github.com/k8-proxy/GW-proxy)
 
+## ICAP Server
+
+Download [ICAP Server OVA]()
+-  ICAP Server AMI on AWS: 
+   ```
+   ID: ami-0f4fd267f91db16c8
+   Owner: 785217600689
+   Region: eu-west-1/Ireland
+   ```
+- Live instances running:
+   ```
+   AWS: http://54.171.157.189:31829/
+   ```
+## File Drop
+Download [File Drop OVA]()
+- File Drop AMI on AWS:
+   ```
+   ID: ami-0e82f434cc76a48a7
+   Owner: 785217600689
+   Region: eu-west-1/Ireland
+   ```
+- Live instances running:
+   ```
+   AWS: http://54.246.155.1/
+   ```
 ## Workflows (AWS)
 
 ### Workflows Brief
@@ -94,4 +119,14 @@
         - Make sure it successfully has the watermark `"Glasswall Processed"`
             - if tests are successful for current instance, all previous instances are terminated
             - if tests are failed, current instance is terminated and deleted
->>>>>>> upstream/main
+
+## SOW version branches
+ - ICAP server SOW version uses below repos adnd branches:
+    -  GW-Releases ([icap-centos](https://githb.com/k8-proxy/GW-Releases/tree/icap-centos))
+       -  vmware-scripts ([icap-centos](https://github.com/k8-proxy/vmware-scripts/tree/icap-centos))
+ - File drop SOW version uses below repos and branches:
+   - GW-Releases ([filedrop-centos](https://github.com/k8-proxy/GW-Releases/tree/filedrop-centos))
+     - vmawre-scripts ([filedrop-centos](https://github.com/k8-proxy/vmware-scripts/tree/filedrop-centos))
+     - k8-rebuild ([sow-_version](https://github.com/k8-proxy/k8-rebuild/tree/sow_version))
+       - k8-rebuild-rest-api ([sow_version](https://github.com/k8-proxy/k8-rebuild-rest-api/tree/sow_version))
+       - k8-rebuild-file-drop ([sow_version](https://github.com/k8-proxy/k8-rebuild-file-drop/tree/sow_version))

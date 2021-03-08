@@ -1,6 +1,6 @@
-# This is a workflow to build AMI with monitoring server
+# This is a basic workflow to help you get started with Actions
 
-name: monitoring-server
+name: HAProxy-ICAP
 env:
   AWS_DEFAULT_REGION: eu-west-1
 # Controls when the action will run. Triggers the workflow on push or pull request
@@ -8,22 +8,31 @@ env:
 on:
   workflow_dispatch:
     inputs:
-      elastic_ip:
-        description: Elastic IP of Monitoring VM
+      monitoring_ip:
+        description: IP address of Monitoring server
         default: 52.30.24.9
         required: true
   push:
-    branches: [ main, monitoring_workflow ]
+    branches: [ main ]
     paths-ignore:
       - 'aws-jmeter-test-engine'
-      - 'gp-load-balancer'
+      - 'diagrams'
+      - 'documentation'
       - 'GW-proxy'
-      - 's-k8-proxy-rebuild'
+      - 'imgs'
+      - 'icap-infrastructure'
       - 'k8-rebuild'
-      - '.github/workflows/k8-rebuild.yaml'
-      - '.github/workflows/proxy-rebuild.yaml'
-      - '.github/workflows/haproxy.yaml'
+      - 'k8-rebuild-folder-to-folder'
+      - 'lambda'
+      - 's-k8-proxy-rebuild'
+      - 'scripts'
+      - 'vmware-scripts'
       - '.github/workflows/icap-server.yaml'
+      - '.github/workflows/proxy-rebuild.yaml'
+      - '.github/workflows/proxy-rebuild-ova.yaml'
+      - '.github/workflows/k8-rebuild.yaml'
+      - '.github/workflows/monitoring.yaml'
+      - '.github/workflows/visualization.yml'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,33 +47,31 @@ jobs:
       with:
         submodules: true
 
-    # - name: Update submodules
-    #   run: |
-    #     git submodule foreach git fetch
-    #     git submodule foreach git pull origin main
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
     # build artifact
     - name: Setup Packer
       run: |
-        cd vmware-scripts/packer
+        # install packer
+        cd gp-load-balancer/packer
+        git submodule update --init --recursive
         curl -o packer.zip https://releases.hashicorp.com/packer/1.6.6/packer_1.6.6_linux_amd64.zip
         unzip -o packer.zip
         sudo mv packer /usr/local/bin
+        cd ../
         
     - name: Build AMI/OVA
       run: |
-        cd vmware-scripts/packer
-        cp -r target/logtrixia/setup/* setup/ 
-        RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
-        packer build -color=false -on-error=cleanup -var github_sha=${RANDOM_STR} -var vm_name=monitoring-server -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} aws-ami.json
-
+        cd gp-load-balancer
+        chmod +x packer/ova-check.sh
+        packer build -color=false -on-error=cleanup -var github_sha=${{ github.sha }} -var vm_name=haproxy-icap -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var elastic_host=${{ github.event.inputs.monitoring_ip }} -var elastic_port=9200 -var elastic_user=${{ secrets.MONITORING_USER }} -var elastic_password=${{ secrets.MONITORING_PASSWORD }} packer/aws-ova.json
+   
+   #Uncomment the following to deploy the created AMI on AWS EC2       
   deploy-ami:
     runs-on: ubuntu-latest
     needs: build-ami
@@ -77,9 +84,9 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
         run: |
           # instance_id="${{ steps.deploy.outputs.instance_id }}"
-          instance_id=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=dev-monitoring-server' "Name=instance-state-name,Values=running" --output text --query 'Reservations[*].Instances[*].InstanceId')
+          instance_id=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=dev-haproxy-icap' "Name=instance-state-name,Values=running" --output text --query 'Reservations[*].Instances[*].InstanceId')
           echo ::set-output name=instance_id::$instance_id
-          
+  
       - name: Deploy AMI to dev
         id: deploy
         env:
@@ -87,14 +94,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
         run: |
-          RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
-          ami_id=$(aws ec2 describe-images --filters "Name=name,Values=monitoring-server-${RANDOM_STR}" --query 'Images[*].[ImageId]' --output text)
-          result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t3.2xlarge --key-name packer --security-group-ids sg-0120400d5eefb0b9e --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-monitoring-server}, {Key=Delete,Value=No},{Key=Scope,Value=icap-server}, {Key=Team, Value=k8-proxy/monitoring-server}, {Key=Owner, Value=githubactionAMIpacker}, {Key=AMI_Name, Value=monitoring-server-${{ github.sha }}}]')          
-          sleep 10m
+          ami_id=$(aws ec2 describe-images --filters "Name=name,Values=haproxy-icap-${{ github.sha }}" --query 'Images[*].[ImageId]' --output text)
+          result=$(aws ec2 run-instances --image-id $ami_id --count 1 --instance-type t2.medium --key-name naders --security-group-ids sg-0996adad67e6beef0 --tag-specifications 'ResourceType=instance, Tags=[{Key=Name,Value=dev-haproxy-icap}, {Key=Team, Value=haproxy-icap}, {Key=Owner, Value=githubactionAMIpacker}, {Key=Scope, Value=Export-OVA}, {Key=Delete, Value=false}, {Key=AMI_Name, Value=haproxy-icap-${{ github.sha }}}]')
+          sleep 3m
           instance_id=$(echo $result | jq -r ".Instances[0].InstanceId")
-          ip_associate=$(aws ec2 associate-address --instance-id $instance_id --public-ip 52.30.24.9)
-          sleep 5
-          echo $ip_associate
           echo "$instance_id is created."
           instance_description=$(aws ec2 describe-instances --instance-ids $instance_id)
           instance_state=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].State.Name")
@@ -105,12 +108,9 @@ jobs:
               exit -1
           fi
           instance_ip=$(echo $instance_description | jq -r ".Reservations[0].Instances[0].PublicIpAddress")
-          echo "Access Kibana and Elasticsearch at: ${instance_ip}"
+          echo "Access the application at http://${instance_ip}"
           echo ::set-output name=instance_ip::$instance_ip
           echo ::set-output name=instance_id::$instance_id
           echo ::set-output name=ami_id::$ami_id
-          # delete old instances
-          instance_id="${{ steps.get_id.outputs.instance_id }}"
-          if [[ ! -z "$instance_id" ]]; then
-            echo "$instance_id" | while IFS= read -r line ; do aws ec2 terminate-instances --instance-ids $line || true; done
-          fi
+
+  
