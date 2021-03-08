@@ -5,6 +5,8 @@ import requests
 import pandas as pd
 import warnings
 
+# Ignore all pyhon warnings here oh
+
 from pandas import json_normalize
 
 warnings.filterwarnings('ignore')
@@ -57,7 +59,7 @@ def lambda_handler(event, context):
     # Polishing results
     df.reset_index(drop=True, inplace=True)
     df                = df[['name','repo_url','body','tag_name', 'published_at']]
-    df                = df.rename({'name':'repo_name'}, axis=1)
+    df                = df.rename({'name':'repo_repo'}, axis=1)
     df                = df.rename({'body':'release_name'}, axis=1)
     df                = df.rename({'tag_name':'release_tag'}, axis=1)
     df                = df.rename({'published_at':'release_date'}, axis=1)
@@ -72,11 +74,11 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket, Key=fileName, Body=uploads)
 
     message = {
-      'message': 'JSON file succesfully created and uploaded to S3'
+      'message': 'JSON file succesfully created and uploaded to S3.'
        }
 
     return {
        'statusCode': 200,
        'headers': {'event-Type': 'application/json'},
-       'body': json.dumps(message)
+       'outcome': json.dumps(message)
        }
