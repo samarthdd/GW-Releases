@@ -72,9 +72,9 @@ jobs:
         
         
         ls ../tmp
+        git rm --cached -r .
+        git reset .
         mkdir -p graph
-        git rm -r --cached graph
-        git reset graph
         cp -R ../tmp/* graph/
         
         
