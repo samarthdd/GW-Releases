@@ -43,41 +43,47 @@ jobs:
       run: |
         git config user.name github-actions@github.com
         git config user.email github-actions
-        BRANCH_NAME=visualization-${GITHUB_SHA::7}
+        
         git remote -v
+        
+        mkdir ../tmp
+        cp scripts/submodule_visualization.py ../submodule_visualization.py
+        
+        python ../submodule_visualization.py ../GW-Releases main -o graph_main.png
+        cp graph_main.png ../tmp
+        git stash
+        
+        python ../submodule_visualization.py ../GW-Releases example -o graph_example.png
+        cp graph_example.png ../tmp
+        git stash
+        
+        git checkout main
+        git submodule update --init --recursive
+        
+        #checkout to new branch
+        BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
         # delete older graph
-        rm graph.png
-        git add 'graph.png'
+        
+        rm -rf graph
+        git add 'graph'
         git commit -m "deleted older graph"
-
-        python scripts/submodule_visualization.py ../GW-Releases
+        
+        cp -R ../tmp graph
         
         # add new graph
         git status
-        git add 'graph.png'
+        git add 'graph'
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
-        
-        branch: example
-        git checkout $branch
-        git reset --hard HEAD
-        git submodule update --init --recursive
-        python scripts/submodule_visualization.py ../GW-Releases -o example1.png
-        git add 'example1.png'
-        BRANCH_NAME=visualization-${GITHUB_SHA::7}
-        git checkout -b $BRANCH_NAME
-        git commit -m "updated graph"
-        git push -u origin $BRANCH_NAME
-        
-        
-        
-        
 
+        
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
         gh pr create --title "Update visualization for new tag" --body ""
         sleep 5s
         gh pr merge $BRANCH_NAME -s -d
+        rm -rf ../tmp
+        rm ../submodule_visualization.py 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUBPAT }}
