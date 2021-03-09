@@ -199,18 +199,23 @@ class Parser:
               help="Image filename")
 
 @click.argument('repo')
-@click.argument('branch')
+@click.argument('branches')
 
+@click.argument('path')
 
-def main(repo, graphmode, out,branch):
-    root = repo
-    parser=Parser()
-    parser.update_branch(branch=branch)
-    tree = parser.parse(root)
-    graph = pydot.Dot(graph_type='digraph',rankdir = 'LR')
-    [graph, indentation] = tree.buildGraph(graph, None, 1, graphmode, with_url=True)
-    filename = out + '.png'
-    graph.write_png(filename)
+def main(repo, graphmode, out, branches, path):
+    branches=branches.strip('][').split(', ')
+    print(branches)
+    for branch in branches:
+        graph_path= path + "/" + out +"_"+ branch
+        root = repo
+        parser=Parser()
+        parser.update_branch(branch=branch)
+        tree = parser.parse(root)
+        graph = pydot.Dot(graph_type='digraph',rankdir = 'LR')
+        [graph, indentation] = tree.buildGraph(graph, None, 1, graphmode, with_url=True)
+        filename = graph_path + '.png'
+        graph.write_png(filename)
 
 if __name__ == '__main__':
     main()
