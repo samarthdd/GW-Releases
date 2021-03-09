@@ -177,6 +177,15 @@ class Parser:
                 tree.createChild(newTree)
         return tree
 
+    def update_branch(self,branch):
+        cmd = ["git", "checkout", branch]
+        subprocess.check_output(cmd)
+        cmd = ["git", "reset", "--hard", "HEAD"]
+        subprocess.check_output(cmd)
+        cmd = ["git", "submodule", "update", "--init", "--recursive"]
+        subprocess.check_output(cmd)
+
+
 
 
 @click.command()
@@ -190,19 +199,13 @@ class Parser:
               help="Image filename")
 
 @click.argument('repo')
+@click.argument('branch')
 
 
-def main(repo, graphmode, out):
-    # cmd = ["git", "checkout", branch ]
-    # subprocess.check_output(cmd)
-    # cmd=["git", "reset", "--hard","HEAD" ]
-    # subprocess.check_output(cmd)
-    # cmd = ["git", "submodule", "update","--init","--recursive"]
-    # subprocess.check_output(cmd)
-
-
+def main(repo, graphmode, out,branch):
     root = repo
     parser=Parser()
+    parser.update_branch(branch=branch)
     tree = parser.parse(root)
     graph = pydot.Dot(graph_type='digraph',rankdir = 'LR')
     [graph, indentation] = tree.buildGraph(graph, None, 1, graphmode, with_url=True)
