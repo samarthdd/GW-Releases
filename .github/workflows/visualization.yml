@@ -66,6 +66,7 @@ jobs:
           rm -rf graph
           git add 'graph'
           git commit -m "deleted older graph"
+          git push -u origin $BRANCH_NAME
         fi
         
         cp -R ../tmp graph
