@@ -67,7 +67,7 @@ jobs:
            git commit -m "deleted older graph"
         fi
         ls ../tmp
-        cp ../tmp/* graph/
+        cp ../tmp/* graph
         
         
         # add new graph
