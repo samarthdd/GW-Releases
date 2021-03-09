@@ -67,9 +67,9 @@ jobs:
           git add graph
           git status
           git commit -m "deleted older graph"
-          git push
+          git push -u origin $BRANCH_NAME
         fi
-        
+        ls ../tmp
         cp -R ../tmp graph
         
         # add new graph
