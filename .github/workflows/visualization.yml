@@ -73,7 +73,7 @@ jobs:
         
         # add new graph
         git status
-        git add 'graph'
+        git add 'graph_1'
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
 
