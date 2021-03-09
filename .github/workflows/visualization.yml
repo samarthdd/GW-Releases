@@ -59,9 +59,22 @@ jobs:
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
+        # delete older graph
+        DIR="graph"
+        if [ -d "$DIR" ]; then
+        # Take action if $DIR exists. #
+           
+           rm -rf graph
+           git commit -m "deleted older graph"
+        fi
+        
+
+        
         
         ls ../tmp
         mkdir -p graph
+        git rm -r --cached graph
+        git reset graph
         cp -R ../tmp/* graph/
         
         
