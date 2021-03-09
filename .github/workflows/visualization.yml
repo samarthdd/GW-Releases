@@ -69,11 +69,11 @@ jobs:
           git push -u origin $BRANCH_NAME
         fi
         
-        cp -R ../tmp graph_1
+        cp -R ../tmp graph
         
         # add new graph
         git status
-        git add 'graph_1'
+        git add 'graph'
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
 
