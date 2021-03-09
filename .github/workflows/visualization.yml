@@ -54,10 +54,13 @@ jobs:
         
         git checkout main
         git submodule update --init --recursive
+        git reset --hard HEAD
+        git pull
         
         #checkout to new branch
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
+        
         
         # delete older graph
         DIR="graph"
@@ -66,21 +69,17 @@ jobs:
            git rm -r graph
            # rm -rf graph
            git commit -m "deleted older graph"
+          
         fi
-        
-
-        
-        
+      
         ls ../tmp
         mkdir -p graph
-        git rm -r --cached graph
-        git reset graph
         cp -R ../tmp/* graph/
         
         
         # add new graph
         git status
-        git add -f graph/*
+        git add graph/*
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
 
