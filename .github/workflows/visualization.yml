@@ -49,11 +49,11 @@ jobs:
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py
         
-        python ../submodule_visualization.py ../GW-Releases main -o graph_main.png
+        python ../submodule_visualization.py ../GW-Releases main -o graph_main
         cp graph_main.png ../tmp
         git stash
         
-        python ../submodule_visualization.py ../GW-Releases example -o graph_example.png
+        python ../submodule_visualization.py ../GW-Releases example -o graph_example
         cp graph_example.png ../tmp
         git stash
         
