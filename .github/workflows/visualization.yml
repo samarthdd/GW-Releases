@@ -63,7 +63,9 @@ jobs:
         DIR="graph"
         if [ -d "$DIR" ]; then
         # Take action if $DIR exists. #
-          mv graph graph_backup
+           rm graph/*
+           git add graph/*
+           git commit -m "deleted older graph"
         fi
         ls ../tmp
         cp -R ../tmp graph
@@ -71,7 +73,7 @@ jobs:
         
         # add new graph
         git status
-        git add 'graph'
+        git add graph
         git commit -m "Updates new graph"
         git push -u origin $BRANCH_NAME
 
