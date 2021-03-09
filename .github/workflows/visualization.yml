@@ -64,12 +64,12 @@ jobs:
         if [ -d "$DIR" ]; then
         # Take action if $DIR exists. #
           rm -rf graph
-          git add 'graph'
+          git add graph
           git commit -m "deleted older graph"
           git push -u origin $BRANCH_NAME
         fi
         
-        cp -R ../tmp graph
+        cp -R ../tmp graph_1
         
         # add new graph
         git status
