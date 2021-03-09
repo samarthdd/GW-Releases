@@ -68,7 +68,7 @@ jobs:
         fi
         ls ../tmp
         mkdir -p graph
-        cp -R ../tmp graph
+        cp -R ../tmp/* graph/
         
         
         # add new graph
