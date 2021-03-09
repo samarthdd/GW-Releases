@@ -63,7 +63,7 @@ jobs:
         DIR="graph"
         if [ -d "$DIR" ]; then
         # Take action if $DIR exists. #
-           git rm graph
+           git rm -r graph
            git commit -m "deleted older graph"
         fi
         ls ../tmp
