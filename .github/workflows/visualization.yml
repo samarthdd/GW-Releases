@@ -51,8 +51,10 @@ jobs:
         
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py 
+        tags=$(git tag -l)
         
-        python ../submodule_visualization.py ../GW-Releases "[main, example]" ../tmp
+        
+        python ../submodule_visualization.py ../GW-Releases "[main example $(echo $tags)]" ../tmp
         
         git checkout main
         git submodule update --init --recursive
