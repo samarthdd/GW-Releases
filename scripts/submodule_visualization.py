@@ -101,7 +101,7 @@ class Tree(object):
         main_repo_name=self.get_main_repo_name()
         if main_repo_name in self.data['name']:
             label=sep + label+self.data["name"]
-            label = label + sep+self.get_master_branch()+sep
+            label = label + sep + sep+ "branch =" + self.get_master_branch()+sep
             #label += sep+"filedrop-centos"+sep
 
 
@@ -114,7 +114,7 @@ class Tree(object):
                     label += sep + "(Forked from: " + parent_repo + ")"
                     print(parent_repo)
         if self.data["branch"]:
-            label += sep + sep + "branch =" + self.data["branch"]
+            label += sep + sep + "branch =" + self.data["branch"] + sep + sep
 
         json = self.get_submodules_json()
         for each in json:
