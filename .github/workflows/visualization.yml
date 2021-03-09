@@ -5,13 +5,12 @@ name: visualization
 # Controls when the action will run. 
 on:
   push:
+    branches: [ main ]
+    paths-ignore:
+      - 'graph'
   # Pattern matched against refs/tags
     tags:        
       - '*'           # Push events to every tag
-  pull_request:
-    types: [edited]
-    branches:
-     - '!visualization--**' 
  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
