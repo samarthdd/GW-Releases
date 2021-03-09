@@ -65,8 +65,9 @@ jobs:
         # Take action if $DIR exists. #
           rm -rf graph
           git add graph
+          git status
           git commit -m "deleted older graph"
-          git push -u origin $BRANCH_NAME
+          git push
         fi
         
         cp -R ../tmp graph
