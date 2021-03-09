@@ -48,15 +48,9 @@ jobs:
         git fetch --all
         
         mkdir ../tmp
-        cp scripts/submodule_visualization.py ../submodule_visualization.py
+        cp scripts/submodule_visualization.py ../submodule_visualization.py 
         
-        python ../submodule_visualization.py ../GW-Releases main -o graph_main
-        cp graph_main.png ../tmp
-        git stash
-        
-        python ../submodule_visualization.py ../GW-Releases example -o graph_example
-        cp graph_example.png ../tmp
-        git stash
+        python ../submodule_visualization.py ../GW-Releases "[main, example]" ../tmp
         
         git checkout main
         git submodule update --init --recursive
@@ -73,8 +67,6 @@ jobs:
           git add 'graph'
           git commit -m "deleted older graph"
         fi
-        
-        
         
         cp -R ../tmp graph
         
