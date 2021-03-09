@@ -54,7 +54,7 @@ jobs:
         
         git checkout main
         git submodule update --init --recursive
-        git reset -hard HEAD
+        git reset --hard HEAD
         git pull
         
         #checkout to new branch
@@ -69,9 +69,7 @@ jobs:
            git rm -r graph
            # rm -rf graph
            git commit -m "deleted older graph"
-           gh pr create --title "Update visualization for new tag" --body ""
-           sleep 5s
-           gh pr merge $BRANCH_NAME -s
+          
         fi
       
         ls ../tmp
