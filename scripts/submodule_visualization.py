@@ -204,7 +204,7 @@ class Parser:
 @click.argument('path')
 
 def main(repo, graphmode, out, branches, path):
-    branches=branches.strip('][').split(', ')
+    branches=branches.strip('][').split(' ')
     print(branches)
     for branch in branches:
         graph_path= path + "/" + out +"_"+ branch
