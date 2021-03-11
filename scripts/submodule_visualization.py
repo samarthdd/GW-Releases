@@ -178,7 +178,7 @@ class Parser:
         return tree
 
     def update_branch(self,branch):
-        cmd = ["git", "checkout", branch]
+        cmd = ["git", "checkout", "origin/"+branch]
         subprocess.check_output(cmd)
         cmd = ["git", "reset", "--hard", "HEAD"]
         subprocess.check_output(cmd)
