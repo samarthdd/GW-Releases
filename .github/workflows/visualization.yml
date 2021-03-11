@@ -46,7 +46,7 @@ jobs:
         git config user.email github-actions
         
         git remote -v
-        git fetch --all --tags
+        git fetch --tags
         
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py 
