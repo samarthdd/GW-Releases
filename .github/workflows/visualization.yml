@@ -46,7 +46,13 @@ jobs:
         git config user.email github-actions
         
         git remote -v
-        git fetch --tags
+        git checkout main
+        git submodule update --init --recursive
+        git reset --hard HEAD
+        git pull
+        git fetch --tags --no-recurse-submodules
+        
+        
         
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py 
@@ -55,11 +61,7 @@ jobs:
         
         python ../submodule_visualization.py ../GW-Releases "[main example $(echo $tags)]" ../tmp
         
-        git checkout main
-        git submodule update --init --recursive
-        git reset --hard HEAD
-        git pull
-        
+       
         #checkout to new branch
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
