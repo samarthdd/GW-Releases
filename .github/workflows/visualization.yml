@@ -104,7 +104,7 @@ jobs:
         git status
         git add graph/*
         git commit -m "Updates new graph"
-        git push -u origin $BRANCH_NAME
+        git push --set-upstream origin $BRANCH_NAME
 
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
         gh pr create --title "Update visualization for new tag" --body ""
