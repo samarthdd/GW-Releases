@@ -195,6 +195,7 @@ class Parser:
         #tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
         #args = ["git", "describe", "--tags", tag_commit_id]
         args = ["git", "describe", "--tags","--abbrev=0"]
+        args=["git", "for-each-ref" ,"refs/tags", "--sort=-taggerdate", "--format='%(refname:short)'" ,"--count=1"]
         latest_tag = subprocess.check_output(args, encoding='UTF-8').strip()
         return latest_tag
 
