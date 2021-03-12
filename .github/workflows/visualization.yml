@@ -70,7 +70,6 @@ jobs:
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
-        fi
         if [ $(ls -A "$DIR" | wc -l) -gt 0 ]; then
         echo "deleting graph"
         # Take action if $DIR exists. #
