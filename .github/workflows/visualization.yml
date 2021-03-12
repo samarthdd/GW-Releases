@@ -53,8 +53,6 @@ jobs:
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py
 
-        
-   
         #list tags
         tags=$(git tag -l)
         # Run script
@@ -72,21 +70,11 @@ jobs:
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
-   
-        # Delete older graph
-        DIR="graph"
-        if [ -d "$DIR" ]; then
-        echo "deleting graph one"
-        # Take action if $DIR exists. #
-           git rm -r graph
-           # rm -rf graph
-           git commit -m "deleted older graph" 
         fi
         if [ $(ls -A "$DIR" | wc -l) -gt 0 ]; then
         echo "deleting graph"
         # Take action if $DIR exists. #
            git rm -r graph
-           # rm -rf graph
            git commit -m "deleted older graph" 
         fi
    
