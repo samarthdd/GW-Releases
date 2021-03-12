@@ -50,7 +50,7 @@ jobs:
         git submodule update --init --recursive
         git reset --hard HEAD
         git pull
-        git fetch --tags --no-recurse-submodules
+        git fetch --all
         
         
         
