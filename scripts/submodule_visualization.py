@@ -188,7 +188,15 @@ class Parser:
         subprocess.check_output(cmd)
 
 
-
+    def get_latest_tag(self):
+        get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
+        tags=['git', 'fetch', '--all', '--tags']
+        subprocess.check_output(tags)
+        #tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
+        #args = ["git", "describe", "--tags", tag_commit_id]
+        args = ["git", "describe", "--abbrev=0"]
+        latest_tag = subprocess.check_output(args, encoding='UTF-8').strip()
+        return latest_tag
 
 @click.command()
 @click.option('-g', '--graphmode',
@@ -207,12 +215,16 @@ class Parser:
 
 def main(repo, graphmode, out, branches, path):
     branches=branches.strip('][').split(' ')
-    print(branches)
+    parser = Parser()
+    latest_tag=parser.get_latest_tag()
+
     for branch in branches:
-        graph_path= path + "/" + out +"_"+ branch
+        graph_path = path + "/" + out + "_" + branch
         root = repo
-        parser=Parser()
-        parser.update_branch(branch=branch)
+        if branch == latest_tag:
+            print(branch)
+            graph_path = path + "/" + out + "_" + "latest_tag"
+        parser.checkout_branch(branch=branch)
         tree = parser.parse(root)
         graph = pydot.Dot(graph_type='digraph',rankdir = 'LR')
         [graph, indentation] = tree.buildGraph(graph, None, 1, graphmode, with_url=True)
