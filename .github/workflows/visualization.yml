@@ -44,47 +44,46 @@ jobs:
       run: |
         git config user.name github-actions@github.com
         git config user.email github-actions
+        git config http.postBuffer 524288000
         
         git remote -v
-        git checkout main
-        git submodule update --init --recursive
-        git reset --hard HEAD
-        git pull
         git fetch --all
-        
-        
-        
+
+        #Copy script
         mkdir ../tmp
-        cp scripts/submodule_visualization.py ../submodule_visualization.py 
+        cp scripts/submodule_visualization.py ../submodule_visualization.py
+
+        #list tags
         tags=$(git tag -l)
+
+        # Run script
+        python ../submodule_visualization.py ../GW-Releases "[main filedrop-centos icap-centos $(echo $tags)]" ../tmp
         
+        # git checkout main
+        # git submodule update --init --recursive
+        # git reset --hard HEAD
+        # git pull
         
-        python ../submodule_visualization.py ../GW-Releases "[main example $(echo $tags)]" ../tmp
-        
-       
-        #checkout to new branch
+        # Checkout to new branch
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
         
-        # delete older graph
+        # Delete older graph
         DIR="graph"
-        if [ $(ls -A "$DIR" | wc -l) -gt 0 ]; then
+        if [ -d "$DIR" ]; then
         # Take action if $DIR exists. #
            git rm -r graph
            # rm -rf graph
            git commit -m "deleted older graph"
           
         fi
-      
+
+        # Copy all graphs
         ls ../tmp
-        rm -rf graph
         mkdir -p graph
-        
-        
         cp -R ../tmp/* graph/
-        
-        
+
         # add new graph
         git status
         git add graph/*
