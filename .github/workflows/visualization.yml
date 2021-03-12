@@ -57,7 +57,7 @@ jobs:
         tags=$(git tag -l)
 
         # Run script
-        python ../submodule_visualization.py ../GW-Releases "[main filedrop-centos icap-centos $(echo $tags)]" ../tmp
+        python ../submodule_visualization.py ../GW-Releases "[main main $(echo $tags)]" ../tmp
         
         # git checkout main
         # git submodule update --init --recursive
