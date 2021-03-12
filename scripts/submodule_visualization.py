@@ -190,11 +190,11 @@ class Parser:
 
     def get_latest_tag(self):
         get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
-        tags=['git', 'fetch', '--all', '--tags']
+        tags=["git", "fetch", "--all"]
         subprocess.check_output(tags)
         #tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
         #args = ["git", "describe", "--tags", tag_commit_id]
-        args = ["git", "describe", "--abbrev=0"]
+        args = ["git", "describe", "--tags","--abbrev=0"]
         latest_tag = subprocess.check_output(args, encoding='UTF-8').strip()
         return latest_tag
 
