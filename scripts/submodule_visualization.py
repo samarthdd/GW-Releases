@@ -177,7 +177,7 @@ class Parser:
                 tree.createChild(newTree)
         return tree
 
-    def update_branch(self,branch):
+    def checkout_branch(self,branch):
         cmd = ["git", "fetch", "--all"]
         subprocess.check_output(cmd)
         cmd = ["git", "checkout",branch]
@@ -186,7 +186,6 @@ class Parser:
         subprocess.check_output(cmd)
         cmd = ["git", "submodule", "update", "--init", "--recursive"]
         subprocess.check_output(cmd)
-
 
     def get_latest_tag(self):
         get_tag_commit = ["git", "rev-list", "--tags", "--max-count=1"]
@@ -218,6 +217,7 @@ def main(repo, graphmode, out, branches, path):
     branches=branches.strip('][').split(' ')
     parser = Parser()
     latest_tag=parser.get_latest_tag()
+    print(latest_tag)
 
     for branch in branches:
         graph_path = path + "/" + out + "_" + branch
