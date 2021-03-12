@@ -69,7 +69,7 @@ jobs:
         
         # delete older graph
         DIR="graph"
-        if [ -d "$DIR" ]; then
+        if [ $(ls -A "$DIR" | wc -l) -gt 0 ]; then
         # Take action if $DIR exists. #
            git rm -r graph
            # rm -rf graph
@@ -78,7 +78,10 @@ jobs:
         fi
       
         ls ../tmp
+        rm -rf graph
         mkdir -p graph
+        
+        
         cp -R ../tmp/* graph/
         
         
