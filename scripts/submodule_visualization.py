@@ -201,7 +201,7 @@ class Parser:
         print(latest_tag)
         # cmd = ["git", "describe", "--tags","--abbrev=0", commit_id ]
         cmd=["git", "for-each-ref" ,"refs/tags", "--sort=-taggerdate", "--format='%(refname:short)'" ,"--count=1"]
-        latest_tag = subprocess.check_output(cmd, encoding='UTF-8').strip()
+        latest_tag = subprocess.check_output(cmd, encoding='UTF-8').strip().replace("'", "")
         print("latest tag")
         print(latest_tag)
         return latest_tag
