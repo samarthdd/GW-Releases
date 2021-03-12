@@ -40,7 +40,7 @@ jobs:
         pip install requests
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
-    - name: Fetch data
+    - name: Update graph
       run: |
         git config user.name github-actions@github.com
         git config user.email github-actions
@@ -54,8 +54,7 @@ jobs:
         cp scripts/submodule_visualization.py ../submodule_visualization.py
 
         
-    - name: Run script
-      run: |
+   
         #list tags
         tags=$(git tag -l)
         # Run script
@@ -65,8 +64,7 @@ jobs:
         # git submodule update --init --recursive
         # git reset --hard HEAD
         # git pull
-    - name: Checkout Branch
-      run: | 
+    
         # Checkout to new branch
         git checkout main
         git reset --hard HEAD
@@ -74,8 +72,7 @@ jobs:
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
-    - name: Delete older graph
-      run: | 
+   
         # Delete older graph
         DIR="graph"
         if [ -d "$DIR" ]; then
@@ -92,8 +89,7 @@ jobs:
            # rm -rf graph
            git commit -m "deleted older graph" 
         fi
-    - name: Update new graphs
-      run: | 
+   
 
         # Copy all graphs
         ls ../tmp
@@ -104,7 +100,7 @@ jobs:
         git status
         git add graph/*
         git commit -m "Updates new graph"
-        git push --set-upstream origin $BRANCH_NAME
+        git push -u origin $BRANCH_NAME
 
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
         gh pr create --title "Update visualization for new tag" --body ""
