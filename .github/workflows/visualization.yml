@@ -53,10 +53,11 @@ jobs:
         mkdir ../tmp
         cp scripts/submodule_visualization.py ../submodule_visualization.py
 
-        #list tags
-        tags=$(git tag -l)
+        
     - name: Run script
       run: |
+        #list tags
+        tags=$(git tag -l)
         # Run script
         python ../submodule_visualization.py ../GW-Releases "[main main $(echo $tags)]" ../tmp
         
@@ -67,6 +68,9 @@ jobs:
     - name: Checkout Branch
       run: | 
         # Checkout to new branch
+        git checkout main
+        git reset --hard HEAD
+        git submodule update --init --recursive
         BRANCH_NAME=visualization-${GITHUB_SHA::7}
         git checkout -b $BRANCH_NAME
         
