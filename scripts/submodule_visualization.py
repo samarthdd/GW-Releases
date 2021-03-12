@@ -192,10 +192,14 @@ class Parser:
         tags=["git", "fetch", "--all"]
         subprocess.check_output(tags)
         #tag_commit_id = subprocess.check_output(get_tag_commit, encoding='UTF-8').strip()
+        cmd=["git", "rev-parse","main"]
+        commit_id =subprocess.check_output(cmd, encoding='UTF-8').strip()
         #args = ["git", "describe", "--tags", tag_commit_id]
-        args = ["git", "describe", "--tags","--abbrev=0"]
-        args=["git", "for-each-ref" ,"refs/tags", "--sort=-taggerdate", "--format='%(refname:short)'" ,"--count=1"]
+        args = ["git", "describe", "--tags","--abbrev=0", commit_id ]
+        # args=["git", "for-each-ref" ,"refs/tags", "--sort=-taggerdate", "--format='%(refname:short)'" ,"--count=1"]
         latest_tag = subprocess.check_output(args, encoding='UTF-8').strip()
+        print("latest tag")
+        print(latest_tag)
         return latest_tag
 
 @click.command()
