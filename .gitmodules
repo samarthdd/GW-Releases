@@ -38,3 +38,6 @@
 	path = k8-go-api
 	url = https://github.com/k8-proxy/k8-go-api
 
+[submodule "vmware-scripts"]
+	path = vmware-scripts
+	url = https://github.com/k8-proxy/vmware-scripts.git
